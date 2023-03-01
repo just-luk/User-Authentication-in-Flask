@@ -31,7 +31,7 @@ from flask_login import (
 
 from app import create_app,db,login_manager,bcrypt
 from models import User
-from forms import login_form,register_form
+from forms import login_form
 
 
 @login_manager.user_loader
@@ -47,7 +47,10 @@ def session_handler():
 
 @app.route("/", methods=("GET", "POST"), strict_slashes=False)
 def index():
-    return render_template("index.html",title="Home")
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
+    else:
+        return render_template("index.html",title="Home")
 
 
 @app.route("/login/", methods=("GET", "POST"), strict_slashes=False)
@@ -56,7 +59,7 @@ def login():
 
     if form.validate_on_submit():
         try:
-            user = User.query.filter_by(email=form.email.data).first()
+            user = User.query.filter_by(username=form.username.data).first()
             if check_password_hash(user.pwd, form.pwd.data):
                 login_user(user)
                 return redirect(url_for('index'))
@@ -67,57 +70,8 @@ def login():
 
     return render_template("auth.html",
         form=form,
-        text="Login",
         title="Login",
         btn_action="Login"
-        )
-
-
-
-# Register route
-@app.route("/register/", methods=("GET", "POST"), strict_slashes=False)
-def register():
-    form = register_form()
-    if form.validate_on_submit():
-        try:
-            email = form.email.data
-            pwd = form.pwd.data
-            username = form.username.data
-            
-            newuser = User(
-                username=username,
-                email=email,
-                pwd=bcrypt.generate_password_hash(pwd),
-            )
-    
-            db.session.add(newuser)
-            db.session.commit()
-            flash(f"Account Succesfully created", "success")
-            return redirect(url_for("login"))
-
-        except InvalidRequestError:
-            db.session.rollback()
-            flash(f"Something went wrong!", "danger")
-        except IntegrityError:
-            db.session.rollback()
-            flash(f"User already exists!.", "warning")
-        except DataError:
-            db.session.rollback()
-            flash(f"Invalid Entry", "warning")
-        except InterfaceError:
-            db.session.rollback()
-            flash(f"Error connecting to the database", "danger")
-        except DatabaseError:
-            db.session.rollback()
-            flash(f"Error connecting to the database", "danger")
-        except BuildError:
-            db.session.rollback()
-            flash(f"An error occured !", "danger")
-    return render_template("auth.html",
-        form=form,
-        text="Create account",
-        title="Register",
-        btn_action="Register account"
         )
 
 @app.route("/logout")
