@@ -3,6 +3,14 @@ from flask_migrate import upgrade, migrate, init, stamp
 from models import User
 from flask_bcrypt import generate_password_hash
 
+def add_user(username, password):
+    newuser = User(
+        username="test",
+        pwd=generate_password_hash("password!"),
+    )
+    db.session.add(newuser)
+    db.session.commit()
+
 def deploy():
     """Run deployment tasks."""
 
@@ -16,12 +24,7 @@ def deploy():
     migrate()
     upgrade()
 
-    newuser = User(
-        username="test",
-        pwd=generate_password_hash("password!"),
-    )
-    db.session.add(newuser)
-    db.session.commit()
+    add_user("test", "password!")
 
 
 deploy()
