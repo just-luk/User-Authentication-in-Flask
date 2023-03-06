@@ -54,7 +54,11 @@ content%}
 		{% endfor%}
 		<div class="text-center">
 			<div class="d-grid gap-2">
-				<button type="submit" class="btn btn-block btn-success mb-3">
+				<button
+					type="submit"
+					id="login-button"
+					class="btn btn-block text-white mb-3"
+				>
 					Login
 				</button>
 			</div>
@@ -64,12 +68,29 @@ content%}
 <style>
 	#login-card {
 		width: 33vw;
-		background-color: black;
+		background-color: transparent;
 		padding: 20px;
 		position: absolute;
 		top: 33%;
 		left: 50%;
 		transform: translateX(-50%) translateY(-50%);
+	}
+	#login-button {
+		background: linear-gradient(-45deg, #204829, #008529, #22b455, #80ce87);
+		background-size: 400% 400%;
+		animation: gradient 10s ease infinite;
+	}
+
+	@keyframes gradient {
+		0% {
+			background-position: 0% 50%;
+		}
+		50% {
+			background-position: 100% 50%;
+		}
+		100% {
+			background-position: 0% 50%;
+		}
 	}
 </style>
 {% endblock %}

@@ -51,6 +51,22 @@ content%}
 		padding: 0;
 		box-sizing: border-box;
 	}
+	body {
+		background: #000;
+		overflow: hidden;
+	}
+	::-webkit-scrollbar {
+		width: 10px;
+	}
+
+	::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	::-webkit-scrollbar-thumb {
+		background: rgba(173, 181, 189, 0.75);
+		border-radius: 25px;
+	}
 	#chat {
 		position: absolute;
 		z-index: 1;
